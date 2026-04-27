@@ -8,12 +8,12 @@ export default function HomePage() {
           <span className="brand-mark">TS</span>
           <span className="brand-copy">
             TabShare
-            <small>Shared expenses with a cleaner operational flow</small>
+            <small>Shared expense tracking</small>
           </span>
         </Link>
         <div className="stack-inline">
           <Link className="pill-link" href="#flow">
-            Product flow
+            Flow
           </Link>
           <Link className="primary-button" href="/groups/new">
             Create workspace
@@ -21,54 +21,65 @@ export default function HomePage() {
         </div>
       </header>
 
-      <section className="hero-grid">
+      <section className="hero-grid hero-lift">
         <div className="hero-copy">
-          <p className="eyebrow">Shared spending, routed properly</p>
-          <h1>Track a group budget from setup to settlement without losing the thread.</h1>
+          <div className="hero-kicker">
+            <span className="status-dot" />
+            Trip, household, and team spending
+          </div>
+          <h1>Share the tab. Settle the balance.</h1>
           <p className="lead">
-            TabShare is a full-stack expense workspace for trips, roommates, and collaborative budgets. Create a
-            group, add members, record payments, review the ledger, and finish with a clear settlement plan.
+            TabShare turns shared costs into a clean workspace: members, expenses, balances, and the shortest path to
+            settling up.
           </p>
           <div className="hero-actions">
             <Link className="primary-button" href="/groups/new">
               Start a new group
             </Link>
             <Link className="secondary-button" href="#flow">
-              See the UX flow
+              See the flow
             </Link>
+          </div>
+          <div className="hero-proof">
+            <span>Built for repeat use</span>
+            <strong>Dashboard, ledger, and settlement plan in one routed app</strong>
           </div>
         </div>
 
-        <aside className="hero-preview">
-          <p className="eyebrow">Snapshot</p>
-          <div className="preview-shell">
-            <div className="preview-summary">
-              <div className="preview-stat">
-                <span>Active members</span>
-                <strong>4</strong>
-              </div>
-              <div className="preview-stat">
-                <span>Total logged</span>
-                <strong>$671.48</strong>
-              </div>
-              <div className="preview-stat">
-                <span>Settlements</span>
-                <strong>3</strong>
-              </div>
+        <aside className="hero-board" aria-label="Example group expense dashboard">
+          <div className="board-topline">
+            <div>
+              <span className="mini-label">Lisbon weekend</span>
+              <strong>$671.48</strong>
             </div>
-            <div className="preview-list">
-              <div className="preview-item">
-                <span>Latest expense</span>
-                <strong>Saturday dinner · $96.00</strong>
-              </div>
-              <div className="preview-item">
-                <span>Largest receiver</span>
-                <strong>Ava · +$118.41</strong>
-              </div>
-              <div className="preview-item">
-                <span>Next payment</span>
-                <strong>Noah pays Ava · $62.27</strong>
-              </div>
+            <span className="tag">4 members</span>
+          </div>
+          <div className="balance-bubbles" aria-hidden="true">
+            <div className="balance-bubble bubble-large">
+              <span>Ava</span>
+              <strong>+$118</strong>
+            </div>
+            <div className="balance-bubble bubble-medium">
+              <span>Noah</span>
+              <strong>-$62</strong>
+            </div>
+            <div className="balance-bubble bubble-small">
+              <span>Mia</span>
+              <strong>+$24</strong>
+            </div>
+          </div>
+          <div className="board-list">
+            <div className="board-row">
+              <span>Dinner</span>
+              <strong>$96.00</strong>
+            </div>
+            <div className="board-row">
+              <span>Apartment</span>
+              <strong>$420.00</strong>
+            </div>
+            <div className="board-row settle">
+              <span>Noah pays Ava</span>
+              <strong>$62.27</strong>
             </div>
           </div>
         </aside>
@@ -77,35 +88,30 @@ export default function HomePage() {
       <section className="section-stack" id="flow">
         <div className="panel-title-row">
           <div>
-            <p className="eyebrow">Flow</p>
-            <h2>Built around the order users actually work in</h2>
+            <p className="eyebrow">Features</p>
+            <h2>Built for an easy user experience</h2>
           </div>
-          <p className="support-copy">
-            The UI is structured as a sequence of routed steps instead of a single overloaded page.
-          </p>
         </div>
         <div className="flow-grid">
           <article className="flow-card">
             <span className="step-index">1</span>
             <h3>Create the workspace</h3>
             <p>
-              Define the trip or household, add the member list, and land directly on a server-rendered dashboard with
-              real balances.
+              Set up a trip, household, or project with the people who need to split costs.
             </p>
           </article>
           <article className="flow-card">
             <span className="step-index">2</span>
-            <h3>Capture expenses cleanly</h3>
+            <h3>Capture the details</h3>
             <p>
-              Record who paid, when it happened, what category it belongs to, and exactly which members were included
-              in the split.
+              Record the amount, payer, category, date, notes, and the members included in each split.
             </p>
           </article>
           <article className="flow-card">
             <span className="step-index">3</span>
-            <h3>Review and settle</h3>
+            <h3>Settle with confidence</h3>
             <p>
-              Move from overview to ledger to settlements without losing context. Each page is tuned to a specific job.
+              Review balances and follow a minimal payment plan to clear the group.
             </p>
           </article>
         </div>
@@ -114,26 +120,26 @@ export default function HomePage() {
       <section className="section-stack">
         <div className="panel-title-row">
           <div>
-            <p className="eyebrow">What Changed</p>
-            <h2>From class demo to deployable application</h2>
+            <p className="eyebrow">Experience</p>
+            <h2>The app feels more like a product than a spreadsheet.</h2>
           </div>
         </div>
         <div className="feature-grid">
           <article className="feature-card">
-            <h3>Next.js App Router</h3>
-            <p>Dedicated routes for onboarding, dashboard, ledger, expense capture, and settlements.</p>
+            <h3>Fast dashboard scan</h3>
+            <p>Total spend, latest activity, and member positions are visible without hunting through rows.</p>
           </article>
           <article className="feature-card">
-            <h3>Server-side persistence</h3>
-            <p>Group data is stored in Postgres through a backend layer designed for Vercel deployment.</p>
+            <h3>Focused ledger</h3>
+            <p>Filters, categories, payer details, and notes keep the full expense history readable.</p>
           </article>
           <article className="feature-card">
-            <h3>Validation at the edge of the system</h3>
-            <p>Server actions and API routes validate payloads before writing to the database.</p>
+            <h3>Calm settlement view</h3>
+            <p>The final screen shows who pays whom, without asking users to decode balance math.</p>
           </article>
           <article className="feature-card">
-            <h3>Deterministic balance math</h3>
-            <p>Amounts are stored in cents, split evenly with remainder handling, and turned into a minimal settlement plan.</p>
+            <h3>Solid backend flow</h3>
+            <p>Server actions, validation, and cent-based calculations keep the interface grounded in reliable data.</p>
           </article>
         </div>
       </section>
