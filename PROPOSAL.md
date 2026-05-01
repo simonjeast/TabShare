@@ -24,4 +24,4 @@ I want to build this because I will personally need it soon while traveling with
 - Dark mode or other visual customization
 
 ## What technologies do you plan to use?
-I plan to use HTML, CSS, and JavaScript to build the application, along with local storage to save user and expense data. I may also use Chart.js for visualizations if I add spending summaries or analytics. The project will be deployed publicly using GitHub Pages.
+I plan to use HTML, CSS, and JavaScript to build the application, along with local storage to save user and expense data. I may also use Chart.js for visualizations if I add spending summaries or analytics. The project will be deployed publicly using Vercel to a custom domain (tabshare.me) redeemed via the Github student developer pack.
