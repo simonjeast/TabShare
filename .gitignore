@@ -6,3 +6,8 @@ node_modules
 .env.production
 coverage
 
+private-link-migration-*.json
+.env.*
+!.env.example
+playwright-report
+test-results

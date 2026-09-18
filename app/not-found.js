@@ -5,9 +5,10 @@ export default function NotFound() {
     <main className="site-shell">
       <div className="panel">
         <p className="eyebrow">Not Found</p>
-        <h1 className="display">That workspace does not exist.</h1>
+        <h1 className="display">We couldn’t open that group.</h1>
         <p className="lead">
-          Check the URL, create a new group, or return to the main overview to start a fresh workspace.
+          Check that you have the full invitation link. Older group links may
+          need to be replaced by the group organiser.
         </p>
         <div className="hero-actions">
           <Link className="primary-button" href="/groups/new">
@@ -21,4 +22,3 @@ export default function NotFound() {
     </main>
   );
 }
-

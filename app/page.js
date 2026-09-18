@@ -2,147 +2,105 @@ import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main className="site-shell">
+    <main className="site-shell home-shell">
       <header className="topbar">
-        <Link className="brand" href="/">
-          <span className="brand-mark">TS</span>
-          <span className="brand-copy">
-            TabShare
-            <small>Shared expense tracking</small>
-          </span>
+        <Link className="brand" href="/" aria-label="TabShare home">
+          <span className="brand-mark">↗</span>
+          <span>TabShare</span>
         </Link>
-        <div className="stack-inline">
-          <Link className="pill-link" href="#flow">
-            Flow
-          </Link>
-          <Link className="primary-button" href="/groups/new">
-            Create workspace
-          </Link>
-        </div>
+        <Link className="primary-button" href="/groups/new">
+          Create a group <span aria-hidden="true">↗</span>
+        </Link>
       </header>
-
-      <section className="hero-grid hero-lift">
-        <div className="hero-copy">
-          <div className="hero-kicker">
-            <span className="status-dot" />
-            Trip, household, and team spending
-          </div>
-          <h1>Share the tab. Settle the balance.</h1>
-          <p className="lead">
-            TabShare turns shared costs into a clean workspace: members, expenses, balances, and the shortest path to
-            settling up.
-          </p>
-          <div className="hero-actions">
-            <Link className="primary-button" href="/groups/new">
-              Start a new group
-            </Link>
-            <Link className="secondary-button" href="#flow">
-              See the flow
-            </Link>
-          </div>
-          <div className="hero-proof">
-            <span>Built for repeat use</span>
-            <strong>Dashboard, ledger, and settlement plan in one routed app</strong>
-          </div>
+      <section className="home-intro">
+        <p className="eyebrow">Less keeping score. More being together.</p>
+        <h1>
+          Good times.
+          <br />
+          Even <span>splits.</span>
+        </h1>
+        <p className="lead">
+          One place for the trip, the house, and everything you share. Add
+          expenses, see everyone’s balance, and know who owes what.
+        </p>
+        <div className="hero-actions">
+          <Link className="primary-button" href="/groups/new">
+            Start your group <span aria-hidden="true">↗</span>
+          </Link>
+          <Link className="secondary-button" href="/groups/demo">
+            Explore a sample group <span aria-hidden="true">→</span>
+          </Link>
         </div>
-
-        <aside className="hero-board" aria-label="Example group expense dashboard">
-          <div className="board-topline">
+        <p className="helper-text home-note">
+          Split in USD · Up to 12 people · No payment transfers
+        </p>
+      </section>
+      <section className="sample-panel" aria-labelledby="sample-title">
+        <div className="panel-title-row">
+          <div>
+            <p className="eyebrow">A little less “I’ll work it out later”</p>
+            <h2 id="sample-title">The weekend, accounted for.</h2>
+          </div>
+          <span className="tag">Sample group</span>
+        </div>
+        <div className="sample-grid">
+          <div className="sample-total">
+            <p>Coastal weekend</p>
+            <strong>$720.00</strong>
+            <span>3 friends · 3 shared expenses</span>
+            <Link href="/groups/demo">Open sample workspace ↗</Link>
+          </div>
+          <div className="sample-ledger">
             <div>
-              <span className="mini-label">Lisbon weekend</span>
-              <strong>$671.48</strong>
+              <span>01 / Stay</span>
+              <strong>Beach house</strong>
+              <b>$480.00</b>
             </div>
-            <span className="tag">4 members</span>
-          </div>
-          <div className="balance-bubbles" aria-hidden="true">
-            <div className="balance-bubble bubble-large">
-              <span>Ava</span>
-              <strong>+$118</strong>
+            <div>
+              <span>02 / Food</span>
+              <strong>Saturday dinner</strong>
+              <b>$150.00</b>
             </div>
-            <div className="balance-bubble bubble-medium">
-              <span>Noah</span>
-              <strong>-$62</strong>
+            <div>
+              <span>03 / Travel</span>
+              <strong>Petrol & parking</strong>
+              <b>$90.00</b>
             </div>
-            <div className="balance-bubble bubble-small">
-              <span>Mia</span>
-              <strong>+$24</strong>
-            </div>
-          </div>
-          <div className="board-list">
-            <div className="board-row">
-              <span>Dinner</span>
-              <strong>$96.00</strong>
-            </div>
-            <div className="board-row">
-              <span>Apartment</span>
-              <strong>$420.00</strong>
-            </div>
-            <div className="board-row settle">
-              <span>Noah pays Ava</span>
-              <strong>$62.27</strong>
-            </div>
-          </div>
-        </aside>
-      </section>
-
-      <section className="section-stack" id="flow">
-        <div className="panel-title-row">
-          <div>
-            <p className="eyebrow">Features</p>
-            <h2>Built for an easy user experience</h2>
           </div>
         </div>
-        <div className="flow-grid">
-          <article className="flow-card">
-            <span className="step-index">1</span>
-            <h3>Create the workspace</h3>
-            <p>
-              Set up a trip, household, or project with the people who need to split costs.
-            </p>
-          </article>
-          <article className="flow-card">
-            <span className="step-index">2</span>
-            <h3>Capture the details</h3>
-            <p>
-              Record the amount, payer, category, date, notes, and the members included in each split.
-            </p>
-          </article>
-          <article className="flow-card">
-            <span className="step-index">3</span>
-            <h3>Settle with confidence</h3>
-            <p>
-              Review balances and follow a minimal payment plan to clear the group.
-            </p>
-          </article>
+        <div className="sample-bottom">
+          <span>
+            Alex gets back <strong>$240.00</strong>
+          </span>
+          <span>Every cent included. Every share clear.</span>
         </div>
       </section>
-
-      <section className="section-stack">
-        <div className="panel-title-row">
-          <div>
-            <p className="eyebrow">Experience</p>
-            <h2>The app feels more like a product than a spreadsheet.</h2>
-          </div>
-        </div>
-        <div className="feature-grid">
-          <article className="feature-card">
-            <h3>Fast dashboard scan</h3>
-            <p>Total spend, latest activity, and member positions are visible without hunting through rows.</p>
-          </article>
-          <article className="feature-card">
-            <h3>Focused ledger</h3>
-            <p>Filters, categories, payer details, and notes keep the full expense history readable.</p>
-          </article>
-          <article className="feature-card">
-            <h3>Calm settlement view</h3>
-            <p>The final screen shows who pays whom, without asking users to decode balance math.</p>
-          </article>
-          <article className="feature-card">
-            <h3>Solid backend flow</h3>
-            <p>Server actions, validation, and cent-based calculations keep the interface grounded in reliable data.</p>
-          </article>
-        </div>
+      <section className="flow-grid home-flow" aria-label="How TabShare works">
+        <article>
+          <p className="eyebrow">01 / Bring your people</p>
+          <h3>Make a group.</h3>
+          <p>
+            A name and the people sharing the cost. That’s your starting point.
+          </p>
+        </article>
+        <article>
+          <p className="eyebrow">02 / Keep it together</p>
+          <h3>Add what you paid.</h3>
+          <p>Choose who paid and who joined in. We split the expense evenly.</p>
+        </article>
+        <article>
+          <p className="eyebrow">03 / Make it right</p>
+          <h3>See how to settle.</h3>
+          <p>
+            A clear payment plan, calculated to the cent. Pay each other your
+            usual way.
+          </p>
+        </article>
       </section>
+      <footer className="site-footer">
+        <span>TabShare · Made for shared moments.</span>
+        <a href="https://github.com/simonjeast/TabShare">View the project ↗</a>
+      </footer>
     </main>
   );
 }

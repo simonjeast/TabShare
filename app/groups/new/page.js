@@ -2,6 +2,8 @@ import Link from "next/link";
 import { CreateGroupForm } from "@/components/CreateGroupForm";
 import { isDatabaseConfigured } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default function NewGroupPage() {
   const databaseReady = isDatabaseConfigured();
 
@@ -23,19 +25,21 @@ export default function NewGroupPage() {
       <div className="two-column">
         <section className="panel">
           <p className="eyebrow">Setup</p>
-          <h1 className="display">Start with the group, not the ledger.</h1>
+          <h1 className="display">Who’s splitting the tab?</h1>
           <p className="lead">
-            The onboarding form only asks for the minimum information needed to create a usable workspace: name,
-            purpose, and members.
+            Bring your people together in one place. Give your group a name, add
+            everyone, and start with your first shared expense.
           </p>
           <div className="section-stack">
             <div className="metric-card">
-              <span className="metric-label">Why this flow</span>
-              <strong>Groups become usable immediately after creation.</strong>
+              <span className="metric-label">01 / Make it yours</span>
+              <strong>Trips, flatmates, dinners. One group for each.</strong>
             </div>
             <div className="metric-card">
-              <span className="metric-label">What happens next</span>
-              <strong>You land on the dashboard and can start logging expenses right away.</strong>
+              <span className="metric-label">02 / Start sharing</span>
+              <strong>
+                Add an expense and we’ll work out each person’s share.
+              </strong>
             </div>
           </div>
         </section>
@@ -43,8 +47,8 @@ export default function NewGroupPage() {
         <section className="panel">
           {!databaseReady ? (
             <div className="banner warning">
-              Connect a Postgres database in Vercel and set `POSTGRES_URL` or `DATABASE_URL` before creating live
-              workspaces.
+              Group creation is temporarily unavailable. You can still explore
+              the sample group from the home page.
             </div>
           ) : null}
 
@@ -60,4 +64,3 @@ export default function NewGroupPage() {
     </main>
   );
 }
-

@@ -1,9 +1,10 @@
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getGroupSnapshot } from "@/lib/data";
 import {
   formatCurrencyFromCents,
   formatDate,
-  formatSignedCurrencyFromCents
+  formatSignedCurrencyFromCents,
 } from "@/lib/formatting";
 
 export const dynamic = "force-dynamic";
@@ -12,26 +13,36 @@ export default async function GroupOverviewPage({ params, searchParams }) {
   const { slug } = await params;
   const query = await searchParams;
   const snapshot = await getGroupSnapshot(slug);
+  if (!snapshot) notFound();
   const latestExpense = snapshot.expenses[0];
 
   return (
     <>
       {query?.created === "group" ? (
-        <div className="banner success">Workspace created. The next recommended step is to add the first expense.</div>
+        <div className="banner success">
+          Workspace created. The next recommended step is to add the first
+          expense.
+        </div>
       ) : null}
 
       <section className="panel">
         <div className="panel-title-row">
           <div>
             <p className="eyebrow">Overview</p>
-            <h2 className="page-title">{snapshot.group.name}</h2>
+            <h1 className="page-title">{snapshot.group.name}</h1>
             <p className="lead">{snapshot.group.purpose}</p>
           </div>
           <div className="stack-inline">
-            <Link className="primary-button" href={`/groups/${slug}/expenses/new`}>
+            <Link
+              className="primary-button"
+              href={`/groups/${slug}/expenses/new`}
+            >
               Add expense
             </Link>
-            <Link className="secondary-button" href={`/groups/${slug}/settlements`}>
+            <Link
+              className="secondary-button"
+              href={`/groups/${slug}/settlements`}
+            >
               Review settlements
             </Link>
           </div>
@@ -40,19 +51,29 @@ export default async function GroupOverviewPage({ params, searchParams }) {
         <div className="summary-grid">
           <article className="summary-card">
             <span>Total spent</span>
-            <strong>{formatCurrencyFromCents(snapshot.summary.totalSpentCents)}</strong>
+            <strong>
+              {formatCurrencyFromCents(snapshot.summary.totalSpentCents)}
+            </strong>
           </article>
           <article className="summary-card">
             <span>Average expense</span>
-            <strong>{formatCurrencyFromCents(snapshot.summary.averageExpenseCents)}</strong>
+            <strong>
+              {formatCurrencyFromCents(snapshot.summary.averageExpenseCents)}
+            </strong>
           </article>
           <article className="summary-card">
             <span>Largest payment</span>
-            <strong>{formatCurrencyFromCents(snapshot.summary.largestExpenseCents)}</strong>
+            <strong>
+              {formatCurrencyFromCents(snapshot.summary.largestExpenseCents)}
+            </strong>
           </article>
           <article className="summary-card">
             <span>Latest activity</span>
-            <strong>{latestExpense ? formatDate(latestExpense.spentOn) : "No expenses yet"}</strong>
+            <strong>
+              {latestExpense
+                ? formatDate(latestExpense.spentOn)
+                : "No expenses yet"}
+            </strong>
           </article>
         </div>
       </section>
@@ -71,10 +92,13 @@ export default async function GroupOverviewPage({ params, searchParams }) {
                 <div>
                   <strong>{member.name}</strong>
                   <p className="helper-text">
-                    Paid {formatCurrencyFromCents(member.paidCents)} · Share {formatCurrencyFromCents(member.owedCents)}
+                    Paid {formatCurrencyFromCents(member.paidCents)} · Share{" "}
+                    {formatCurrencyFromCents(member.owedCents)}
                   </p>
                 </div>
-                <strong className={member.balanceCents >= 0 ? "positive" : "negative"}>
+                <strong
+                  className={member.balanceCents >= 0 ? "positive" : "negative"}
+                >
                   {formatSignedCurrencyFromCents(member.balanceCents)}
                 </strong>
               </article>
@@ -91,16 +115,23 @@ export default async function GroupOverviewPage({ params, searchParams }) {
           </div>
           <div className="bar-list">
             {snapshot.categoryTotals.length === 0 ? (
-              <div className="empty-state">Add the first expense to populate the category breakdown.</div>
+              <div className="empty-state">
+                Add the first expense to populate the category breakdown.
+              </div>
             ) : (
               snapshot.categoryTotals.map((category) => (
                 <div className="bar-row" key={category.category}>
                   <div className="expense-row">
                     <strong>{category.category}</strong>
-                    <span className="muted">{formatCurrencyFromCents(category.amountCents)}</span>
+                    <span className="muted">
+                      {formatCurrencyFromCents(category.amountCents)}
+                    </span>
                   </div>
                   <div className="bar-track">
-                    <div className="bar-fill" style={{ width: `${category.percent}%` }} />
+                    <div
+                      className="bar-fill"
+                      style={{ width: `${category.percent}%` }}
+                    />
                   </div>
                 </div>
               ))
@@ -125,7 +156,8 @@ export default async function GroupOverviewPage({ params, searchParams }) {
           <div className="expense-list">
             {snapshot.expenses.length === 0 ? (
               <div className="empty-state">
-                No expenses yet. Create the first entry to turn the workspace into a live balance sheet.
+                No expenses yet. Create the first entry to turn the workspace
+                into a live balance sheet.
               </div>
             ) : (
               snapshot.expenses.slice(0, 5).map((expense) => (
@@ -136,11 +168,19 @@ export default async function GroupOverviewPage({ params, searchParams }) {
                       <span className="tag">{expense.category}</span>
                     </div>
                     <p className="helper-text">
-                      Paid by {expense.payerName} on {formatDate(expense.spentOn)}
+                      Paid by {expense.payerName} on{" "}
+                      {formatDate(expense.spentOn)}
                     </p>
-                    <p className="helper-text">Split with {expense.participants.map((member) => member.name).join(", ")}</p>
+                    <p className="helper-text">
+                      Split with{" "}
+                      {expense.participants
+                        .map((member) => member.name)
+                        .join(", ")}
+                    </p>
                   </div>
-                  <strong>{formatCurrencyFromCents(expense.amountCents)}</strong>
+                  <strong>
+                    {formatCurrencyFromCents(expense.amountCents)}
+                  </strong>
                 </article>
               ))
             )}
@@ -150,4 +190,3 @@ export default async function GroupOverviewPage({ params, searchParams }) {
     </>
   );
 }
-

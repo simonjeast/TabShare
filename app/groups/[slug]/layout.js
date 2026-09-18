@@ -1,8 +1,14 @@
+import { ShareGroup } from "@/components/ShareGroup";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GroupNav } from "@/components/GroupNav";
 import { formatCurrencyFromCents } from "@/lib/formatting";
 import { getGroupSnapshot } from "@/lib/data";
+
+export const metadata = {
+  robots: { index: false, follow: false },
+  referrer: "no-referrer",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -39,10 +45,21 @@ export default async function GroupLayout({ children, params }) {
           </div>
           <div className="metric-card">
             <span className="metric-label">Total logged</span>
-            <strong>{formatCurrencyFromCents(snapshot.summary.totalSpentCents)}</strong>
+            <strong>
+              {formatCurrencyFromCents(snapshot.summary.totalSpentCents)}
+            </strong>
           </div>
         </div>
       </header>
+      {slug === "demo" ? (
+        <div className="banner">
+          You’re exploring a sample group. Its expenses are read-only.{" "}
+          <Link href="/groups/new">
+            <strong>Create your own group →</strong>
+          </Link>
+        </div>
+      ) : null}
+      {slug !== "demo" ? <ShareGroup slug={slug} /> : null}
       {children}
     </main>
   );

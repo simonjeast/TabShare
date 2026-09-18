@@ -1,141 +1,64 @@
 # TabShare
 
-TabShare is a full-stack shared expense app for trips, roommates, and collaborative budgets. Users can create a group workspace, add members, record expenses, review a filtered ledger, and see a settlement plan that shows who should pay whom.
+Shared expenses for trips, households, and small groups. Built with Next.js, React, Postgres, and Zod.
 
-The final product is a routed Next.js app backed by Postgres. It uses server-side persistence, server actions, API routes, validation, and deterministic balance calculations.
+## What works
 
-## Live Demo URL
+- Create a group with 2–12 members, then share its private invitation link.
+- Log USD expenses and split them evenly among selected members.
+- See a ledger, category filters, individual balances, and a suggested settlement plan.
+- Explore `/groups/demo` without creating a group or connecting a database.
+- Amounts are calculated in integer cents, including deterministic remainder distribution.
 
-https://tabshare.me
+The settlement plan is a suggestion, not a payment service. TabShare does not transfer money or verify that a payment took place. The greedy settlement algorithm clears all balances but does not guarantee the fewest mathematically possible transfers.
 
-## Features
+## Access model
 
-- Create expense workspaces for trips, households, or shared projects
-- Add 2 to 12 group members during workspace setup
-- Record expenses with title, amount, category, date, payer, notes, and selected participants
-- Split expenses evenly across selected participants
-- Store groups, members, expenses, and participant splits in Postgres
-- View a group dashboard with total spend, average expense, largest payment, latest activity, balances, recent ledger entries, and category totals
-- Filter the full ledger by category and payer
-- Generate settlement suggestions that minimize the number of payments needed to clear balances
-- Use cent-based calculations and deterministic remainder handling to avoid rounding drift
-- Access JSON endpoints for health checks, group creation, group snapshots, and expense creation
-- Responsive interface for desktop and mobile screens
+A group’s URL is its access credential: anyone holding it can read and add expenses. New URLs contain 192 bits of cryptographic randomness. Keep links private; there is no account recovery, per-person permission system, or individual member identity verification. Group pages are excluded from indexing and use a no-referrer policy. Avoid entering sensitive financial account information or credentials in notes.
 
-## App Flow
+**Existing deployment upgrade:** older name-based group links are rejected by this release. Before promoting it, back up Postgres, run `node --env-file=.env.local scripts/migrate-private-links.mjs` to inspect the migration count, then add `--apply` to replace legacy links. The script saves a private mapping with owner-only file permissions before making an atomic database update. Keep that report outside Git and share each replacement link only with its group. Old links intentionally do not redirect, because they were guessable. Existing expenses and member records are preserved. A rollback to the old app would reintroduce the old access weakness.
 
-1. `/`
-   Landing page with the product overview and entry point.
+## Run locally
 
-2. `/groups/new`
-   Create a workspace with a name, purpose, and member list.
+Node.js 22 or later:
 
-3. `/groups/[slug]`
-   Review the dashboard for balances, spending summaries, category totals, and recent expenses.
-
-4. `/groups/[slug]/expenses/new`
-   Add a shared expense and choose the payer and participants.
-
-5. `/groups/[slug]/expenses`
-   Review and filter the full ledger.
-
-6. `/groups/[slug]/settlements`
-   View suggested payments and each member's net position.
-
-## Technologies Used
-
-- Next.js 16 with the App Router
-- React 19
-- Server Actions for form submissions
-- Route Handlers for API endpoints
-- Postgres for persistence
-- `postgres` for SQL access
-- Zod for input validation
-- Global CSS stylesheet
-- Vercel for deployment
-
-## Backend and API
-
-The backend is intentionally small:
-
-- `lib/db.js` creates the Postgres client and ensures tables exist.
-- `lib/data.js` handles group and expense reads/writes.
-- `lib/actions.js` handles server-side form submissions and redirects.
-- `lib/calculations.js` handles balances, category totals, even splits, and settlements.
-- `lib/validation.js` centralizes form and API validation.
-
-Available endpoints:
-
-- `GET /api/health`
-- `POST /api/groups`
-- `GET /api/groups/[slug]`
-- `POST /api/groups/[slug]/expenses`
-
-## Local Development
-
-1. Install dependencies:
-
-```bash
-npm install
+```sh
+npm ci
+npm run dev:local
 ```
 
-2. Create an environment file:
+This starts an isolated in-memory PostgreSQL-compatible test database and the app at `http://localhost:3100`. Data disappears when stopped. It never connects to production.
 
-```bash
-cp .env.example .env.local
+For persistent Postgres, copy `.env.example` to `.env.local`, supply the connection string, then run `npm run dev`. Use `POSTGRES_URL` or `DATABASE_URL`; production connections require TLS.
+
+## Verification
+
+```sh
+npm test
+npm run dev:local
+# In a second terminal:
+npm run test:integration
+npm run build
+npm audit
 ```
 
-3. Add a Postgres connection string to `.env.local`:
+Unit tests cover money conservation, settlement correctness, validation, private-link generation, and JSON request limits. Integration tests create disposable groups and expenses, verify persistence and page responses, and reject cross-group members and invalid inputs. They only target localhost. PGlite exercises PostgreSQL protocol/SQL behavior but is not a substitute for a staging smoke test against the actual hosted Postgres service.
 
-```bash
-POSTGRES_URL="postgres://user:password@host:5432/database"
-```
+## Deploy
 
-`DATABASE_URL` also works if `POSTGRES_URL` is not set.
+Preserve the existing Vercel project and `tabshare.me` domain. Set `POSTGRES_URL` (or `DATABASE_URL`) for the target environment. The app ensures its additive schema on first access; apply the legacy-link migration before promotion. Verify `/api/health`, create a disposable staging group, add an uneven expense split, reload, and compare the settlement totals. Deploy a preview before promoting to production.
 
-4. Start the development server:
+Database-backed write ceilings allow 100 new groups per hour across the app and 120 expenses per minute per group. Provider-level abuse protection can supplement these ceilings. Production release also requires database backups and recovery, and a completed hosted smoke test. These controls are not implied by a successful local build. Private links can be forwarded; use account-based access if your use case needs stronger privacy.
 
-```bash
-npm run dev
-```
+## API
 
-5. Open the app locally:
+- `GET /api/health`: database readiness, without internal error details.
+- `POST /api/groups`: create a group (`name`, `purpose`, `memberNames`).
+- `GET /api/groups/:slug`: group snapshot; private, non-cacheable response.
+- `POST /api/groups/:slug/expenses`: add an expense (`title`, `amount`, `category`, `spentOn`, `payerMemberId`, `participantIds`, optional `notes`).
 
-```bash
-http://localhost:3000
-```
+JSON payloads are limited to 16 KB. Invalid payloads return 400; unsupported content types return 415; oversized payloads return 413. Service failures return 503. Both forms and API writes use server validation and transactions.
 
-## Deployment
+## Project background
 
-The app is deployed on Vercel at https://tabshare.me.
-
-Required environment variable:
-
-- `POSTGRES_URL` or `DATABASE_URL`
-
-After deployment, `/api/health` can be used to confirm that the app can reach the database and ensure its schema.
-
-## AI Tools Used
-
-- OpenAI Codex was used to help redesign the app from the original local-storage proposal into a routed full-stack product.
-- Codex assisted with the App Router structure, server actions, route handlers, database layer, validation flow, and balance/settlement logic.
-
-## Challenges
-
-- Converting the initial static app idea into a full-stack Next.js app required redesigning the user journey into separate focused routes.
-- Adding persistence meant choosing a database flow that would work locally and on Vercel without a heavy migration setup.
-- Balance math needed to avoid floating-point issues, so amounts are converted to cents before calculations.
-- Even splits can leave leftover cents, so the app distributes remainders deterministically based on participant order.
-- Settlement suggestions needed to reduce payment count while keeping each member's final balance correct.
-
-## Future Improvements
-
-- Add authentication and private group access
-- Add shareable invitations instead of manual member entry
-- Support unequal splits by amount, share, or percentage
-- Add receipt uploads
-- Add CSV or PDF exports
-- Add expense editing and deletion
-- Add charts for spending trends by person and category
-- Add multi-currency support
-- Add direct payment options through Stripe auth
+Created by Simon East for a Babson course with assistance from OpenAI Codex. This redesign focuses on a useful, understandable product experience, explicit access boundaries, and verifiable expense calculations.
