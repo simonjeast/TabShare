@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="site-shell">
+    <div className="site-shell">
       <div className="panel">
         <p className="eyebrow">Not Found</p>
         <h1 className="display">We couldn’t open that group.</h1>
@@ -19,6 +19,6 @@ export default function NotFound() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

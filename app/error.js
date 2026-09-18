@@ -2,7 +2,7 @@
 import Link from "next/link";
 export default function ErrorPage({ reset }) {
   return (
-    <main className="site-shell">
+    <div className="site-shell">
       <section className="panel" role="alert">
         <p className="eyebrow">Something went wrong</p>
         <h1>Let’s try that again.</h1>
@@ -19,6 +19,6 @@ export default function ErrorPage({ reset }) {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

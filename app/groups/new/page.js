@@ -1,66 +1,28 @@
 import Link from "next/link";
 import { CreateGroupForm } from "@/components/CreateGroupForm";
 import { isDatabaseConfigured } from "@/lib/db";
-
 export const dynamic = "force-dynamic";
-
 export default function NewGroupPage() {
-  const databaseReady = isDatabaseConfigured();
-
+  const ready = isDatabaseConfigured();
   return (
-    <main className="site-shell">
-      <header className="topbar">
-        <Link className="brand" href="/">
-          <span className="brand-mark">TS</span>
-          <span className="brand-copy">
-            TabShare
-            <small>Create a new expense workspace</small>
-          </span>
-        </Link>
-        <Link className="pill-link" href="/">
-          Back home
-        </Link>
+    <div className="focused-flow">
+      <Link className="back-link" href="/">
+        ← Your groups
+      </Link>
+      <header className="flow-heading">
+        <p className="eyebrow">Start something together</p>
+        <h1>Create a group</h1>
+        <p className="muted">A few names. Then you’re ready to split.</p>
       </header>
-
-      <div className="two-column">
-        <section className="panel">
-          <p className="eyebrow">Setup</p>
-          <h1 className="display">Who’s splitting the tab?</h1>
-          <p className="lead">
-            Bring your people together in one place. Give your group a name, add
-            everyone, and start with your first shared expense.
-          </p>
-          <div className="section-stack">
-            <div className="metric-card">
-              <span className="metric-label">01 / Make it yours</span>
-              <strong>Trips, flatmates, dinners. One group for each.</strong>
-            </div>
-            <div className="metric-card">
-              <span className="metric-label">02 / Start sharing</span>
-              <strong>
-                Add an expense and we’ll work out each person’s share.
-              </strong>
-            </div>
+      <section className="flow-form">
+        {!ready ? (
+          <div className="banner warning">
+            We can’t create groups right now. Please try again later, or{" "}
+            <Link href="/groups/demo">explore the sample group</Link>.
           </div>
-        </section>
-
-        <section className="panel">
-          {!databaseReady ? (
-            <div className="banner warning">
-              Group creation is temporarily unavailable. You can still explore
-              the sample group from the home page.
-            </div>
-          ) : null}
-
-          <div className="panel-title-row">
-            <div>
-              <p className="eyebrow">Workspace Details</p>
-              <h2>Create the group</h2>
-            </div>
-          </div>
-          <CreateGroupForm disabled={!databaseReady} />
-        </section>
-      </div>
-    </main>
+        ) : null}
+        <CreateGroupForm disabled={!ready} />
+      </section>
+    </div>
   );
 }

@@ -6,15 +6,16 @@ Shared expenses for trips, households, and small groups. Built with Next.js, Rea
 
 - Create a group with 2–12 members, then share its private invitation link.
 - Log USD expenses and split them evenly among selected members.
-- See a ledger, category filters, individual balances, and a suggested settlement plan.
+- Return to groups remembered in this browser, select whose balance to view, search expenses, and preview each person’s split.
+- See individual balances, record payments made outside the app, and keep payment history.
 - Explore `/groups/demo` without creating a group or connecting a database.
 - Amounts are calculated in integer cents, including deterministic remainder distribution.
 
-The settlement plan is a suggestion, not a payment service. TabShare does not transfer money or verify that a payment took place. The greedy settlement algorithm clears all balances but does not guarantee the fewest mathematically possible transfers.
+The settlement plan is a suggestion, not a payment service. Users can confirm and record payments made outside TabShare; those records update balances without increasing shared expenses. TabShare does not transfer money or independently verify that a payment took place. The greedy settlement algorithm clears all balances but does not guarantee the fewest mathematically possible transfers.
 
 ## Access model
 
-A group’s URL is its access credential: anyone holding it can read and add expenses. New URLs contain 192 bits of cryptographic randomness. Keep links private; there is no account recovery, per-person permission system, or individual member identity verification. Group pages are excluded from indexing and use a no-referrer policy. Avoid entering sensitive financial account information or credentials in notes.
+A group’s URL is its access credential: anyone holding it can read and add expenses and record payments. New URLs contain 192 bits of cryptographic randomness. Keep links private; there is no account recovery, per-person permission system, or individual member identity verification. Group pages are excluded from indexing and use a no-referrer policy. Avoid entering sensitive financial account information or credentials in notes.
 
 **Existing deployment upgrade:** older name-based group links are rejected by this release. Before promoting it, back up Postgres, run `node --env-file=.env.local scripts/migrate-private-links.mjs` to inspect the migration count, then add `--apply` to replace legacy links. The script saves a private mapping with owner-only file permissions before making an atomic database update. Keep that report outside Git and share each replacement link only with its group. Old links intentionally do not redirect, because they were guessable. Existing expenses and member records are preserved. A rollback to the old app would reintroduce the old access weakness.
 
@@ -50,11 +51,16 @@ Preserve the existing Vercel project and `tabshare.me` domain. Set `POSTGRES_URL
 
 Database-backed write ceilings allow 100 new groups per hour across the app and 120 expenses per minute per group. Provider-level abuse protection can supplement these ceilings. Production release also requires database backups and recovery, and a completed hosted smoke test. These controls are not implied by a successful local build. Private links can be forwarded; use account-based access if your use case needs stronger privacy.
 
+## Design
+
+The current product flow is documented in `design/flow.md`, with the imagegen prompt in `design/prompt.md`. The UI has its own plum/lilac/sage identity rather than following the portfolio theme.
+
 ## API
 
 - `GET /api/health`: database readiness, without internal error details.
 - `POST /api/groups`: create a group (`name`, `purpose`, `memberNames`).
 - `GET /api/groups/:slug`: group snapshot; private, non-cacheable response.
+- `POST /api/groups/:slug/payments`: record a suggested payment using a UUID `requestId`, `fromId`, `toId`, and `amount`. Identical retries return the existing payment; stale or mismatched requests return 409.
 - `POST /api/groups/:slug/expenses`: add an expense (`title`, `amount`, `category`, `spentOn`, `payerMemberId`, `participantIds`, optional `notes`).
 
 JSON payloads are limited to 16 KB. Invalid payloads return 400; unsupported content types return 415; oversized payloads return 413. Service failures return 503. Both forms and API writes use server validation and transactions.

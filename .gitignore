@@ -11,3 +11,4 @@ private-link-migration-*.json
 !.env.example
 playwright-report
 test-results
+design/*.png

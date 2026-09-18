@@ -35,7 +35,8 @@ export async function POST(request, { params }) {
     const expense = await createExpense(parsed.data);
     return Response.json({ id: expense.id }, { status: 201 });
   } catch (error) {
-    if (error instanceof InputError) return Response.json({ error: error.message }, { status: error.status });
+    if (error instanceof InputError)
+      return Response.json({ error: error.message }, { status: error.status });
     return Response.json(
       { error: "Unable to save the expense." },
       { status: 503 },

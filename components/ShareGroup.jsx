@@ -16,10 +16,11 @@ export function ShareGroup({ slug }) {
   return (
     <div className="share-group">
       <button className="secondary-button" type="button" onClick={copy}>
-        Copy invitation link ↗
+        Invite people ↗
       </button>
       <p className="helper-text">
-        Keep this link safe. Anyone with it can view and add expenses.
+        Keep this link safe. Anyone with it can add expenses and record
+        payments.
       </p>
       <p role="status" className="helper-text">
         {message}

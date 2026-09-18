@@ -104,5 +104,16 @@ test("group → expense → persisted ledger → balanced settlement", async () 
       (await fetch(`${base}/groups/${group.slug}${suffix}`)).status,
       200,
     );
+  for(const suggestion of snapshot.settlements) {
+    const payment={requestId:crypto.randomUUID(),fromId:suggestion.fromId,toId:suggestion.toId,amount:suggestion.amountCents/100};
+    assert.equal((await post(`/api/groups/${group.slug}/payments`,payment)).status,201);
+    assert.equal((await post(`/api/groups/${group.slug}/payments`,payment)).status,201);
+    assert.equal((await post(`/api/groups/${group.slug}/payments`,{...payment,requestId:crypto.randomUUID()})).status,409);
+  }
+  const settled=await (await fetch(`${base}/api/groups/${group.slug}`)).json();
+  assert.equal(settled.payments.length,snapshot.settlements.length);
+  assert.equal(settled.settlements.length,0);
+  assert.equal(settled.summary.totalSpentCents,10001);
+  assert.ok(settled.balances.every(member=>member.balanceCents===0));
   assert.equal((await fetch(`${base}/api/groups/demo`)).status, 200);
 });

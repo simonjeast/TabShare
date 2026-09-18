@@ -1,99 +1,124 @@
 "use client";
-
 import { useActionState, useState } from "react";
 import { createGroupAction } from "@/lib/actions";
 import { SubmitButton } from "@/components/SubmitButton";
-
-const initialState = {
-  status: "idle",
-  message: "",
-};
-
 export function CreateGroupForm({ disabled = false }) {
-  const [fields, setFields] = useState({ name: "", purpose: "", members: "" });
-  const change = (event) =>
-    setFields((previous) => ({
-      ...previous,
-      [event.target.name]: event.target.value,
-    }));
-  const [state, formAction] = useActionState(createGroupAction, initialState);
-
+  const [state, action] = useActionState(createGroupAction, { message: "" });
+  const [name, setName] = useState("");
+  const [you, setYou] = useState("");
+  const [friends, setFriends] = useState([""]);
+  const [purpose, setPurpose] = useState("");
   return (
-    <form action={formAction} className="section-stack">
-      <fieldset className="section-stack" disabled={disabled}>
-        <div className="form-grid">
-          <div className="field full">
-            <label htmlFor="name">Group name</label>
+    <form action={action} className="section-stack">
+      <fieldset disabled={disabled}>
+        <div className="field">
+          <label htmlFor="group-name">Group name</label>
+          <input
+            className="input"
+            id="group-name"
+            name="name"
+            placeholder="e.g. Coastal weekend"
+            required
+            minLength={3}
+            maxLength={60}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        </div>
+        <div className="form-section">
+          <h2>Who’s in?</h2>
+          <p className="helper-text">
+            Add yourself and the people sharing expenses. You can share the
+            group link once it’s created.
+          </p>
+          <div className="field">
+            <label htmlFor="your-name">Your name</label>
             <input
               className="input"
-              id="name"
-              name="name"
-              value={fields.name}
-              onChange={change}
-              minLength={3}
-              maxLength={60}
-              placeholder="Lisbon Apartment Trip"
+              id="your-name"
+              name="yourName"
+              placeholder="Your name"
+              autoComplete="given-name"
               required
+              minLength={2}
+              maxLength={40}
+              value={you}
+              onChange={(event) => setYou(event.target.value)}
             />
           </div>
-
-          <div className="field full">
-            <label htmlFor="purpose">Purpose</label>
-            <textarea
-              className="textarea"
-              id="purpose"
-              name="purpose"
-              value={fields.purpose}
-              onChange={change}
-              minLength={12}
-              maxLength={220}
-              placeholder="Explain the trip, household, or project budget this workspace is tracking."
-              required
-            />
-          </div>
-
-          <div className="field full">
-            <label htmlFor="members">Members</label>
-            <textarea
-              className="textarea"
-              id="members"
-              name="members"
-              value={fields.members}
-              onChange={change}
-              placeholder={"One name per line\nAva\nMarcus\nLena\nNoah"}
-              required
-            />
-            <p className="helper-text">
-              Enter between 2 and 12 members. One name per line keeps setup
-              fast.
-            </p>
-          </div>
+          <input type="hidden" name="members" value={friends.join("\n")} />
+          {friends.map((friend, index) => (
+            <div className="friend-field" key={index}>
+              <label htmlFor={`friend-${index}`}>Person {index + 2}</label>
+              <div className="join-input">
+                <input
+                  className="input"
+                  id={`friend-${index}`}
+                  placeholder="Their name"
+                  minLength={2}
+                  maxLength={40}
+                  required
+                  value={friend}
+                  onChange={(event) =>
+                    setFriends((previous) =>
+                      previous.map((value, i) =>
+                        i === index ? event.target.value : value,
+                      ),
+                    )
+                  }
+                />
+                {friends.length > 1 ? (
+                  <button
+                    type="button"
+                    className="remove-person"
+                    aria-label={`Remove person ${index + 2}`}
+                    onClick={() =>
+                      setFriends((previous) =>
+                        previous.filter((_, i) => i !== index),
+                      )
+                    }
+                  >
+                    ×
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          ))}
+          {friends.length < 11 ? (
+            <button
+              type="button"
+              className="text-link"
+              onClick={() => setFriends((previous) => [...previous, ""])}
+            >
+              + Add another person
+            </button>
+          ) : null}
         </div>
+        <details className="optional-details">
+          <summary>
+            Add a description <span>Optional</span>
+          </summary>
+          <textarea
+            className="textarea"
+            name="purpose"
+            aria-label="Group description"
+            maxLength={220}
+            value={purpose}
+            onChange={(event) => setPurpose(event.target.value)}
+            placeholder="What’s the plan?"
+          />
+        </details>
       </fieldset>
-
-      <p
-        role="status"
-        aria-live="polite"
-        className={`feedback ${state.status === "error" ? "error" : ""}`}
-      >
+      <p className="feedback error" role="status">
         {state.message}
       </p>
-
-      <div className="stack-inline">
-        <SubmitButton disabled={disabled} pendingLabel="Creating workspace...">
-          Create workspace
-        </SubmitButton>
-        <span className="status-text">
-          Anyone with your invitation link can view and add expenses. Save it to
-          return to your group.
-        </span>
-      </div>
-
-      {disabled ? (
-        <p className="feedback error">
-          Please try again later. Your group has not been created.
-        </p>
-      ) : null}
+      <SubmitButton disabled={disabled} pendingLabel="Creating your group…">
+        Create group →
+      </SubmitButton>
+      <p className="form-footnote">
+        Anyone with the invitation link can view expenses and record payments.
+        Keep the link with your group. All amounts are in USD.
+      </p>
     </form>
   );
 }

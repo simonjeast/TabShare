@@ -125,3 +125,16 @@ test("private links have cryptographic entropy and legacy links are rejected", (
   for (const slug of ["lisbon-trip", "demo", "g-short", "", null])
     assert.equal(isPrivateGroupSlug(slug), false);
 });
+
+test("recorded payments reduce balances without inflating expenses",()=>{
+ const expenses=[{amountCents:9000,payerId:members[0].id,participants:members,category:"Food"}];
+ const payments=[{fromId:members[1].id,toId:members[0].id,amountCents:3000}];
+ const state=calculateDerivedState(members,expenses,payments);
+ assert.equal(state.summary.totalSpentCents,9000);
+ assert.equal(state.balances.find(member=>member.id===members[1].id).balanceCents,0);
+ assert.equal(state.settlements.length,1);
+ assert.equal(state.settlements[0].amountCents,3000);
+ const settled=calculateDerivedState(members,expenses,[...payments,{fromId:members[2].id,toId:members[0].id,amountCents:3000}]);
+ assert.equal(settled.settlements.length,0);
+ assert.ok(settled.balances.every(member=>member.balanceCents===0));
+});

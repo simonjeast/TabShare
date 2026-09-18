@@ -30,7 +30,8 @@ export async function POST(request) {
     const group = await createGroup(parsed.data);
     return Response.json({ slug: group.slug, id: group.id }, { status: 201 });
   } catch (error) {
-    if (error instanceof InputError) return Response.json({ error: error.message }, { status: error.status });
+    if (error instanceof InputError)
+      return Response.json({ error: error.message }, { status: error.status });
     return Response.json(
       { error: "Unable to create the group." },
       { status: 503 },

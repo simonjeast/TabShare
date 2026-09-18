@@ -1,3 +1,4 @@
+import { AppShell } from "@/components/AppShell";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 
@@ -15,7 +16,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={sans.variable}>{children}</body>
+      <body className={sans.variable}>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }
