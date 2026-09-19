@@ -48,11 +48,6 @@ export function GroupWorkspace({
           <h1>{group.name}</h1>
           {group.purpose ? <p className="muted">{group.purpose}</p> : null}
           <div className="member-strip">
-            {members.map((member) => (
-              <span className="avatar" key={member.id} title={member.name}>
-                {member.name.slice(0, 1)}
-              </span>
-            ))}
             <label className="view-as">
               Viewing as{" "}
               <select
@@ -83,10 +78,10 @@ export function GroupWorkspace({
       {created ? (
         <div className="banner success" role="status">
           {created === "group"
-            ? "Your group is ready. Add your first expense, then share the invitation link."
+            ? "Group created. Add your first expense."
             : created === "payment"
-              ? "Payment recorded. Everyone’s balance is up to date."
-              : "Expense added. Your balances are up to date."}
+              ? "Payment recorded."
+              : "Expense added."}
         </div>
       ) : null}
       {storageFailed ? (
@@ -99,7 +94,10 @@ export function GroupWorkspace({
         <div>
           <span>Total shared expenses</span>
           <strong>{money(summary.totalSpentCents)}</strong>
-          <small>{summary.expenseCount} expenses</small>
+          <small>
+            {summary.expenseCount} expense
+            {summary.expenseCount === 1 ? "" : "s"}
+          </small>
         </div>
         <div
           className={`personal-summary ${person?.balanceCents < 0 ? "owed" : ""}`}
@@ -137,7 +135,7 @@ export function GroupWorkspace({
             className={mode === "balances" ? "active" : ""}
             aria-current={mode === "balances" ? "page" : undefined}
           >
-            Balances & settle up
+            Balances
           </Link>
         </nav>
         <Link
@@ -149,46 +147,39 @@ export function GroupWorkspace({
       </div>
       {mode === "expenses" ? (
         <section className="expense-workspace">
-          <div className="ledger-filters">
-            <input
-              aria-label="Search expenses"
-              className="input"
-              placeholder="Search expenses…"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-            <select
-              className="select"
-              aria-label="Filter by category"
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
-            >
-              <option value="All">All categories</option>
-              {categories.map((value) => (
-                <option key={value}>{value}</option>
-              ))}
-            </select>
-          </div>
+          {expenses.length > 0 ? (
+            <div className="ledger-filters">
+              <input
+                aria-label="Search expenses"
+                className="input"
+                placeholder="Search expenses…"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+              <select
+                className="select"
+                aria-label="Filter by category"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                <option value="All">All categories</option>
+                {categories.map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </div>
+          ) : null}
           {!filtered.length ? (
             <div className="empty-state">
               <h2>
-                {expenses.length
-                  ? "No matching expenses"
-                  : "Your group’s first expense starts here."}
+                {expenses.length ? "No matching expenses" : "No expenses yet."}
               </h2>
               <p>
                 {expenses.length
                   ? "Try another search or category."
-                  : "Paid for something together? Add it once and we’ll work out everyone’s share."}
+                  : "Add what you paid. We’ll split the rest."}
               </p>
-              {!expenses.length ? (
-                <Link
-                  className="primary-button"
-                  href={`/groups/${group.slug}/expenses/new`}
-                >
-                  + Add an expense
-                </Link>
-              ) : (
+              {expenses.length > 0 ? (
                 <button
                   className="secondary-button"
                   onClick={() => {
@@ -198,7 +189,7 @@ export function GroupWorkspace({
                 >
                   Clear filters
                 </button>
-              )}
+              ) : null}
             </div>
           ) : (
             <div className="expense-list">

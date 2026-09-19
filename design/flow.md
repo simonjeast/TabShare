@@ -9,3 +9,7 @@ Direction: a calm, friendly shared-expense product with plum, lilac, warm ivory 
 5. **Balances & settle up:** explain who owes whom. Expand a suggested payment, explicitly confirm it happened outside TabShare, then record it. A database transaction serializes writes and recalculates balances; request IDs make retries idempotent. Keep recorded payments visible separately from expenses.
 
 Private links grant shared access, including payment recording. Local bookmarks are conveniences, not a cloud account. No payment is transferred by TabShare. The prototype intentionally omits misleading navigation or unsupported account capabilities seen in the image concept.
+
+## Simplification pass
+
+Replace the desktop sidebar with a restrained top navigation. Show saved groups as rows with their balances aligned for scanning. Use white space and thin dividers instead of nested colored panels. Keep group creation as the primary home action; reveal invitation entry on demand. Reduce repeated copy, duplicate buttons, decorative avatars, and empty filters. Keep the plum accent for actions and green for positive balances.

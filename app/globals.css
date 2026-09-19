@@ -1,8 +1,8 @@
 :root {
-  --bg: #faf8f5;
+  --bg: #ffffff;
   --surface: #fff;
-  --text: #362441;
-  --muted: #7c7181;
+  --text: #28242b;
+  --muted: #77727a;
   --border: #e8e2eb;
   --primary: #563568;
   --primary-strong: #412650;
@@ -1327,3 +1327,300 @@ strong {
     scroll-behavior: auto !important;
   }
 }
+
+/* A quiet, single-column workspace keeps expenses and balances in focus. */
+.app-frame {
+  display: block;
+}
+.app-topbar {
+  max-width: 1040px;
+  margin: auto;
+  padding: 25px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.app-topbar .brand {
+  font-size: 22px;
+}
+.app-topbar nav {
+  display: flex;
+  gap: 28px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.app-topbar nav a:hover {
+  color: var(--primary);
+}
+.app-content {
+  max-width: 1040px;
+  padding: 64px 40px 24px;
+}
+.workspace-heading {
+  align-items: center;
+  margin-bottom: 38px;
+}
+.workspace-heading h1 {
+  font-weight: 650;
+  letter-spacing: -0.045em;
+}
+.workspace-heading > .primary-button {
+  margin-top: 0;
+}
+.groups-grid {
+  display: block;
+}
+.group-card {
+  position: relative;
+  padding: 25px 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+.group-card-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 24px;
+}
+.group-card-heading h2 {
+  font-size: 18px;
+  font-weight: 650;
+}
+.group-initial {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 20px;
+  background: #f3f0f5;
+}
+.group-balance,
+.group-balance.owed {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  text-align: right;
+}
+.group-balance strong {
+  font-size: 23px;
+  font-weight: 600;
+}
+.card-bottom {
+  grid-column: 1 / -1;
+  border: 0;
+  padding: 0 0 0 59px;
+  margin-top: 5px;
+}
+.card-bottom strong {
+  display: none;
+}
+.group-card > .text-button {
+  margin: 8px 0 0 59px;
+  font-size: 11px;
+}
+.new-group-card {
+  border: 0;
+  background: #faf9fb;
+  min-height: 300px;
+  border-radius: 16px;
+}
+.new-group-card p {
+  max-width: none;
+}
+.new-group-plus {
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  color: var(--primary);
+}
+.new-group-card .secondary-button {
+  background: white;
+  border: 1px solid var(--border);
+}
+.device-note {
+  margin: 24px 0 36px;
+  font-size: 11px;
+}
+.join-group {
+  border-top: 1px solid var(--border);
+  padding: 22px 0;
+}
+.join-group summary {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.join-group[open] summary {
+  margin-bottom: 22px;
+}
+.join-group form {
+  max-width: 560px;
+}
+.join-group .feedback {
+  margin-top: 12px;
+}
+.group-summary {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  gap: 0;
+  padding: 28px 0;
+  margin-bottom: 30px;
+}
+.group-summary > div,
+.group-summary .personal-summary,
+.group-summary .personal-summary.owed {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+.group-summary > div + div {
+  border-left: 1px solid var(--border);
+  padding-left: 32px;
+}
+.group-summary strong {
+  font-size: 36px;
+  font-weight: 600;
+}
+.group-summary span {
+  color: var(--muted);
+}
+.group-summary small {
+  margin-top: 3px;
+}
+.member-strip {
+  margin-top: 12px;
+}
+.view-as {
+  margin-left: 0;
+  font-size: 12px;
+}
+.view-as select {
+  font-size: 12px;
+}
+.expense-workspace {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+.expense-icon {
+  background: #f5f3f6;
+  border-radius: 50%;
+}
+.ledger-item summary {
+  padding: 23px 0;
+}
+.ledger-filters input,
+.ledger-filters select {
+  background: #faf9fb;
+  border-color: transparent;
+}
+.expense-description strong {
+  font-size: 14px;
+}
+.expense-description small,
+.expense-value small {
+  font-size: 11px;
+}
+.member-balances {
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0 0 0 28px;
+}
+.flow-form {
+  border: 0;
+  padding: 0;
+}
+.flow-heading .eyebrow {
+  display: none;
+}
+.app-footer {
+  font-size: 11px;
+  margin-top: 80px;
+}
+@media (max-width: 760px) {
+  .app-topbar {
+    padding: 20px 24px;
+  }
+  .app-content {
+    padding: 38px 24px 24px;
+  }
+  .app-topbar nav {
+    gap: 18px;
+    font-size: 11px;
+  }
+  .group-summary strong {
+    font-size: 29px;
+  }
+  .group-summary > div + div {
+    padding-left: 24px;
+  }
+  .member-balances {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 24px 0 0;
+  }
+  .flow-form {
+    padding: 0;
+  }
+}
+@media (max-width: 480px) {
+  .app-topbar,
+  .app-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .app-topbar .brand {
+    font-size: 19px;
+  }
+  .app-topbar nav {
+    gap: 15px;
+  }
+  .group-card-link {
+    column-gap: 12px;
+  }
+  .group-card-heading h2 {
+    font-size: 16px;
+  }
+  .group-balance strong {
+    font-size: 20px;
+  }
+  .group-initial {
+    width: 36px;
+    height: 36px;
+  }
+  .card-bottom {
+    padding-left: 46px;
+  }
+  .group-card > .text-button {
+    margin-left: 46px;
+  }
+  .group-summary strong {
+    font-size: 25px;
+  }
+  .group-summary > div + div {
+    padding-left: 20px;
+  }
+  .group-toolbar > .primary-button {
+    width: auto;
+    order: 0;
+    margin-bottom: 12px;
+  }
+  .workspace-tabs {
+    width: auto;
+    gap: 24px;
+  }
+  .app-footer {
+    margin-top: 56px;
+  }
+}
+
+.app-content { padding-top: 40px; }
+.back-link { margin-bottom: 18px; }
+.workspace-heading { margin-bottom: 26px; }
+.group-summary { padding: 22px 0; margin-bottom: 24px; }
+.group-summary strong { line-height: 1.25; margin: 9px 0; }
+.demo-banner { background: #f7f5f8; margin-bottom: 24px; padding: 10px 14px; }
+.group-card { padding-top: 20px; padding-bottom: 20px; }
+@media (max-width: 480px) { .app-content { padding-top: 28px; } }

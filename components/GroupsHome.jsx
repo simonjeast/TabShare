@@ -42,9 +42,8 @@ export function GroupsHome() {
     <>
       <header className="workspace-heading">
         <div>
-          <p className="eyebrow">A place for every shared plan</p>
           <h1>Your groups</h1>
-          <p className="muted">Keep the good times. Split the rest.</p>
+          <p className="muted">Shared expenses. All in one place.</p>
         </div>
         <Link className="primary-button" href="/groups/new">
           + New group
@@ -104,7 +103,7 @@ export function GroupsHome() {
                   <div className="card-bottom">
                     <span>
                       {snapshot
-                        ? `${snapshot.summary.expenseCount} expenses`
+                        ? `${snapshot.summary.expenseCount} expense${snapshot.summary.expenseCount === 1 ? "" : "s"}`
                         : "Your saved link is still here"}
                     </span>
                     <strong>View group →</strong>
@@ -126,54 +125,43 @@ export function GroupsHome() {
             );
           })
         )}
-        <Link href="/groups/new" className="new-group-card">
-          <span className="new-group-plus">+</span>
-          <h2>
-            {groups?.length
-              ? "A new plan, a new group."
-              : "Start with your people."}
-          </h2>
-          <p>A weekend away, your flatmates, or dinner with friends.</p>
-          <span className="secondary-button">Create a group</span>
-        </Link>
+        {groups?.length === 0 ? (
+          <Link href="/groups/new" className="new-group-card">
+            <span className="new-group-plus">+</span>
+            <h2>Split something together.</h2>
+            <p>A weekend away, your flatmates, or dinner with friends.</p>
+            <span className="secondary-button">Create a group</span>
+          </Link>
+        ) : null}
       </section>
       <p className="device-note">
-        Groups you open are remembered only in this browser. Keep your
-        invitation links to return on another device.
+        Saved on this device. Keep your group links to open them elsewhere.
       </p>
-      <div className="home-secondary">
-        <section className="sample-invite">
-          <span className="tag">New here?</span>
-          <h2>Take a look around.</h2>
-          <p>Explore a sample weekend trip, from expenses to who owes what.</p>
-          <Link href="/groups/demo" className="text-link">
-            Try a sample group →
-          </Link>
-        </section>
-        <section className="join-group">
-          <h2>Have an invitation?</h2>
-          <form onSubmit={openInvitation}>
-            <label htmlFor="invitation">Paste your group link</label>
-            <div className="join-input">
-              <input
-                className="input"
-                id="invitation"
-                type="text"
-                value={invitation}
-                onChange={(event) => setInvitation(event.target.value)}
-                placeholder="https://…/groups/…"
-                required
-              />
-              <button className="secondary-button" type="submit">
-                Open →
-              </button>
-            </div>
-          </form>
-          <p className="feedback error" role="status">
-            {error}
-          </p>
-        </section>
-      </div>
+      <details className="join-group">
+        <summary>
+          Join with an invitation link <span>+</span>
+        </summary>
+        <form onSubmit={openInvitation}>
+          <label htmlFor="invitation">Paste your group link</label>
+          <div className="join-input">
+            <input
+              className="input"
+              id="invitation"
+              type="text"
+              value={invitation}
+              onChange={(event) => setInvitation(event.target.value)}
+              placeholder="https://…/groups/…"
+              required
+            />
+            <button className="secondary-button" type="submit">
+              Open →
+            </button>
+          </div>
+        </form>
+        <p className="feedback error" role="status">
+          {error}
+        </p>
+      </details>
     </>
   );
 }
