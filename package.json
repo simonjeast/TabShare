@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --test tests/*.test.mjs",
+    "test:integration": "node --test tests/integration/*.test.mjs",
+    "dev:local": "pglite-server --port=55432 --max-connections=10 --run \"next dev --port 3100\" --include-database-url"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -15,6 +18,12 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-socket": "^0.2.11",
     "@playwright/test": "^1.59.1"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
   }
 }

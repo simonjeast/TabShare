@@ -1,26 +1,27 @@
-import { Manrope, Newsreader } from "next/font/google";
+import { AppShell } from "@/components/AppShell";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
 const sans = Manrope({
   subsets: ["latin"],
-  variable: "--font-sans"
-});
-
-const serif = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-serif"
+  variable: "--font-sans",
 });
 
 export const metadata = {
   title: "TabShare",
-  description: "A routed, full-stack expense sharing app for trips, roommates, and collaborative budgets."
+  description:
+    "Split shared expenses, keep everyone’s balance clear, and see who owes what. For trips, roommates, and the everyday things you share.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${sans.variable} ${serif.variable}`}>{children}</body>
+      <body className={sans.variable}>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }
-

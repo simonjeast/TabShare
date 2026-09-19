@@ -1,64 +1,103 @@
+import { notFound } from "next/navigation";
 import { getGroupSnapshot } from "@/lib/data";
-import { formatCurrencyFromCents, formatSignedCurrencyFromCents } from "@/lib/formatting";
-
+import { GroupWorkspace } from "@/components/GroupWorkspace";
+import { PaymentForm } from "@/components/PaymentForm";
+import { formatCurrencyFromCents as money, formatDate } from "@/lib/formatting";
 export const dynamic = "force-dynamic";
-
-export default async function SettlementsPage({ params }) {
+export default async function SettlementsPage({ params, searchParams }) {
   const { slug } = await params;
+  const query = await searchParams;
   const snapshot = await getGroupSnapshot(slug);
-
+  if (!snapshot) notFound();
   return (
-    <div className="two-column">
-      <section className="panel">
-        <div className="panel-title-row">
-          <div>
-            <p className="eyebrow">Settlement Plan</p>
-            <h2>Suggested payments</h2>
-          </div>
-        </div>
-        <div className="settlement-list">
-          {snapshot.settlements.length === 0 ? (
-            <div className="empty-state">Everyone is settled or there are no expenses yet.</div>
+    <GroupWorkspace snapshot={snapshot} mode="balances" created={query.created}>
+      <div className="balance-columns">
+        <section>
+          <h2>Settle up</h2>
+          <p className="muted">
+            Pay each other your usual way, then record it here.
+          </p>
+          {!snapshot.settlements.length ? (
+            <div className="settled-state">
+              <span>✓</span>
+              <h3>
+                {snapshot.expenses.length
+                  ? "Everyone’s square."
+                  : "No payments needed."}
+              </h3>
+              <p>
+                {snapshot.expenses.length
+                  ? "All shared expenses are settled."
+                  : "Add an expense to see who owes what."}
+              </p>
+            </div>
           ) : (
-            snapshot.settlements.map((settlement, index) => (
-              <article className="settlement-card" key={`${settlement.fromId}-${settlement.toId}-${index}`}>
-                <div>
-                  <strong>
-                    {settlement.fromName} pays {settlement.toName}
-                  </strong>
-                  <p className="helper-text">This reduces the number of transactions required to clear the group.</p>
+            snapshot.settlements.map((payment) =>
+              slug === "demo" ? (
+                <div
+                  className="payment-card sample-payment"
+                  key={payment.fromId + payment.toId}
+                >
+                  <span>
+                    {payment.fromName} pays {payment.toName}
+                  </span>
+                  <strong>{money(payment.amountCents)}</strong>
                 </div>
-                <strong>{formatCurrencyFromCents(settlement.amountCents)}</strong>
-              </article>
-            ))
+              ) : (
+                <PaymentForm
+                  key={payment.fromId + payment.toId + payment.amountCents}
+                  slug={slug}
+                  payment={payment}
+                />
+              ),
+            )
           )}
-        </div>
-      </section>
-
-      <section className="panel">
-        <div className="panel-title-row">
-          <div>
-            <p className="eyebrow">Position by Member</p>
-            <h2>Who is net positive or negative</h2>
-          </div>
-        </div>
-        <div className="balance-list">
+          {(snapshot.payments || []).length ? (
+            <div className="payment-history">
+              <h3>Recorded payments</h3>
+              {snapshot.payments.map((payment) => (
+                <div key={payment.id} className="balance-card">
+                  <div>
+                    <strong>
+                      {payment.fromName} paid {payment.toName}
+                    </strong>
+                    <p className="helper-text">
+                      {formatDate(payment.createdAt)}
+                    </p>
+                  </div>
+                  <strong>{money(payment.amountCents)}</strong>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </section>
+        <aside className="member-balances">
+          <h2>Everyone’s balance</h2>
           {snapshot.balances.map((member) => (
-            <article className="balance-card" key={member.id}>
+            <div className="balance-card" key={member.id}>
               <div>
                 <strong>{member.name}</strong>
                 <p className="helper-text">
-                  Paid {formatCurrencyFromCents(member.paidCents)} · Share {formatCurrencyFromCents(member.owedCents)}
+                  Paid {money(member.paidCents)} · Share{" "}
+                  {money(member.owedCents)}
                 </p>
               </div>
-              <strong className={member.balanceCents >= 0 ? "positive" : "negative"}>
-                {formatSignedCurrencyFromCents(member.balanceCents)}
-              </strong>
-            </article>
+              <div
+                className={member.balanceCents < 0 ? "negative" : "positive"}
+              >
+                <strong>{money(Math.abs(member.balanceCents))}</strong>
+                <small>
+                  {member.balanceCents < 0
+                    ? "owes"
+                    : member.balanceCents > 0
+                      ? "gets back"
+                      : "settled"}
+                </small>
+              </div>
+            </div>
           ))}
-        </div>
-      </section>
-    </div>
+        </aside>
+      </div>
+    </GroupWorkspace>
   );
 }
-

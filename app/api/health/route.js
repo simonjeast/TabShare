@@ -8,7 +8,6 @@ export async function GET() {
   return Response.json({
     status: health.ok ? "ok" : "error",
     checkedAt: new Date().toISOString(),
-    ...health
+    ...health,
   });
 }
-

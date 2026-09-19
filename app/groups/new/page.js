@@ -1,63 +1,28 @@
 import Link from "next/link";
 import { CreateGroupForm } from "@/components/CreateGroupForm";
 import { isDatabaseConfigured } from "@/lib/db";
-
+export const dynamic = "force-dynamic";
 export default function NewGroupPage() {
-  const databaseReady = isDatabaseConfigured();
-
+  const ready = isDatabaseConfigured();
   return (
-    <main className="site-shell">
-      <header className="topbar">
-        <Link className="brand" href="/">
-          <span className="brand-mark">TS</span>
-          <span className="brand-copy">
-            TabShare
-            <small>Create a new expense workspace</small>
-          </span>
-        </Link>
-        <Link className="pill-link" href="/">
-          Back home
-        </Link>
+    <div className="focused-flow">
+      <Link className="back-link" href="/">
+        ← Your groups
+      </Link>
+      <header className="flow-heading">
+        <p className="eyebrow">Start something together</p>
+        <h1>Create a group</h1>
+        <p className="muted">A few names. Then you’re ready to split.</p>
       </header>
-
-      <div className="two-column">
-        <section className="panel">
-          <p className="eyebrow">Setup</p>
-          <h1 className="display">Start with the group, not the ledger.</h1>
-          <p className="lead">
-            The onboarding form only asks for the minimum information needed to create a usable workspace: name,
-            purpose, and members.
-          </p>
-          <div className="section-stack">
-            <div className="metric-card">
-              <span className="metric-label">Why this flow</span>
-              <strong>Groups become usable immediately after creation.</strong>
-            </div>
-            <div className="metric-card">
-              <span className="metric-label">What happens next</span>
-              <strong>You land on the dashboard and can start logging expenses right away.</strong>
-            </div>
+      <section className="flow-form">
+        {!ready ? (
+          <div className="banner warning">
+            We can’t create groups right now. Please try again later, or{" "}
+            <Link href="/groups/demo">explore the sample group</Link>.
           </div>
-        </section>
-
-        <section className="panel">
-          {!databaseReady ? (
-            <div className="banner warning">
-              Connect a Postgres database in Vercel and set `POSTGRES_URL` or `DATABASE_URL` before creating live
-              workspaces.
-            </div>
-          ) : null}
-
-          <div className="panel-title-row">
-            <div>
-              <p className="eyebrow">Workspace Details</p>
-              <h2>Create the group</h2>
-            </div>
-          </div>
-          <CreateGroupForm disabled={!databaseReady} />
-        </section>
-      </div>
-    </main>
+        ) : null}
+        <CreateGroupForm disabled={!ready} />
+      </section>
+    </div>
   );
 }
-
