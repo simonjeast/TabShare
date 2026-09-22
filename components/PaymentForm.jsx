@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useActionState, useState, useEffect } from "react";
 import { recordPaymentAction } from "@/lib/actions";
 import { SubmitButton } from "@/components/SubmitButton";
@@ -8,16 +9,20 @@ export function PaymentForm({ slug, payment }) {
   const [requestId, setRequestId] = useState("");
   useEffect(() => setRequestId(crypto.randomUUID()), []);
   return (
-    <details className="payment-card">
-      <summary>
-        <span>
-          <strong>{payment.fromName}</strong>
-          <span className="muted"> pays </span>
-          <strong>{payment.toName}</strong>
-        </span>
-        <strong>{money(payment.amountCents)}</strong>
-        <span className="payment-cta">Record payment →</span>
-      </summary>
+    <section className="settlement-focus">
+      <div className="payment-symbol" aria-hidden="true">
+        ↔
+      </div>
+      <p className="payment-direction">
+        <strong>{payment.fromName}</strong> pays{" "}
+        <strong>{payment.toName}</strong>
+      </p>
+      <h2 className="payment-amount">{money(payment.amountCents)}</h2>
+      <div className="payment-people">
+        <span className="avatar">{payment.fromName.slice(0, 1)}</span>
+        <span aria-hidden="true">→</span>
+        <span className="avatar">{payment.toName.slice(0, 1)}</span>
+      </div>
       <form action={action} className="payment-confirm">
         <input type="hidden" name="groupSlug" value={slug} />
         <input type="hidden" name="fromId" value={payment.fromId} />
@@ -29,20 +34,26 @@ export function PaymentForm({ slug, payment }) {
         />
         <input type="hidden" name="requestId" value={requestId} />
         <p>
-          Confirm that {payment.fromName} has paid {payment.toName}{" "}
-          <strong>{money(payment.amountCents)}</strong> outside TabShare. This
-          only updates the group’s records; it doesn’t send money.
+          Record a payment made outside TabShare. This updates your balances; it
+          doesn’t send money.
         </p>
         <label className="payment-check">
-          <input type="checkbox" required /> This payment has been made.
+          <input type="checkbox" required />
+          This payment has been made.
         </label>
         <p className="feedback error" role="status">
           {state.message}
         </p>
         <SubmitButton disabled={!requestId} pendingLabel="Recording…">
-          Confirm payment
+          Record payment
         </SubmitButton>
+        <Link
+          className="secondary-button payment-cancel"
+          href={`/groups/${slug}`}
+        >
+          Cancel
+        </Link>
       </form>
-    </details>
+    </section>
   );
 }

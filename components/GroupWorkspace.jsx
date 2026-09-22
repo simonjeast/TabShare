@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { FlowSteps } from "@/components/FlowSteps";
 import { useEffect, useState } from "react";
 import { ShareGroup } from "@/components/ShareGroup";
 import { readSavedGroups, rememberGroup } from "@/lib/saved-groups";
@@ -39,6 +40,7 @@ export function GroupWorkspace({
   const categories = [...new Set(expenses.map((expense) => expense.category))];
   return (
     <>
+      <FlowSteps step={2} slug={group.slug} />
       <Link href="/" className="back-link">
         ← Your groups
       </Link>
@@ -48,6 +50,11 @@ export function GroupWorkspace({
           <h1>{group.name}</h1>
           {group.purpose ? <p className="muted">{group.purpose}</p> : null}
           <div className="member-strip">
+            {members.map((member) => (
+              <span className="avatar" key={member.id} title={member.name}>
+                {member.name.slice(0, 1)}
+              </span>
+            ))}
             <label className="view-as">
               Viewing as{" "}
               <select
@@ -78,10 +85,10 @@ export function GroupWorkspace({
       {created ? (
         <div className="banner success" role="status">
           {created === "group"
-            ? "Group created. Add your first expense."
+            ? "Your group is ready. Add your first expense, then share the invitation link."
             : created === "payment"
-              ? "Payment recorded."
-              : "Expense added."}
+              ? "Payment recorded. Everyone’s balance is up to date."
+              : "Expense added. Your balances are up to date."}
         </div>
       ) : null}
       {storageFailed ? (
@@ -135,7 +142,7 @@ export function GroupWorkspace({
             className={mode === "balances" ? "active" : ""}
             aria-current={mode === "balances" ? "page" : undefined}
           >
-            Balances
+            Balances & settle up
           </Link>
         </nav>
         <Link
@@ -147,7 +154,8 @@ export function GroupWorkspace({
       </div>
       {mode === "expenses" ? (
         <section className="expense-workspace">
-          {expenses.length > 0 ? (
+          <h2 className="section-title">Recent expenses</h2>
+          {expenses.length ? (
             <div className="ledger-filters">
               <input
                 aria-label="Search expenses"
@@ -172,14 +180,23 @@ export function GroupWorkspace({
           {!filtered.length ? (
             <div className="empty-state">
               <h2>
-                {expenses.length ? "No matching expenses" : "No expenses yet."}
+                {expenses.length
+                  ? "No matching expenses"
+                  : "Your group’s first expense starts here."}
               </h2>
               <p>
                 {expenses.length
                   ? "Try another search or category."
-                  : "Add what you paid. We’ll split the rest."}
+                  : "Paid for something together? Add it once and we’ll work out everyone’s share."}
               </p>
-              {expenses.length > 0 ? (
+              {!expenses.length ? (
+                <Link
+                  className="primary-button"
+                  href={`/groups/${group.slug}/expenses/new`}
+                >
+                  + Add an expense
+                </Link>
+              ) : (
                 <button
                   className="secondary-button"
                   onClick={() => {
@@ -189,7 +206,7 @@ export function GroupWorkspace({
                 >
                   Clear filters
                 </button>
-              ) : null}
+              )}
             </div>
           ) : (
             <div className="expense-list">

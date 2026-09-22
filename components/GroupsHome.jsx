@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { FlowSteps } from "@/components/FlowSteps";
 import { useEffect, useState } from "react";
 import { readSavedGroups, forgetGroup } from "@/lib/saved-groups";
 import { formatCurrencyFromCents as money } from "@/lib/formatting";
@@ -40,10 +41,12 @@ export function GroupsHome() {
   }
   return (
     <>
+      <FlowSteps step={1} />
       <header className="workspace-heading">
         <div>
+          <p className="eyebrow">A place for every shared plan</p>
           <h1>Your groups</h1>
-          <p className="muted">Shared expenses. All in one place.</p>
+          <p className="muted">Keep the good times. Split the rest.</p>
         </div>
         <Link className="primary-button" href="/groups/new">
           + New group
@@ -76,6 +79,22 @@ export function GroupsHome() {
                       </p>
                     </div>
                   </div>
+                  {snapshot?.group.purpose ? (
+                    <p className="group-purpose">{snapshot.group.purpose}</p>
+                  ) : null}
+                  {snapshot ? (
+                    <div className="card-members">
+                      {snapshot.members.map((member) => (
+                        <span
+                          className="avatar"
+                          title={member.name}
+                          key={member.id}
+                        >
+                          {member.name.slice(0, 1)}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
                   <div
                     className={`group-balance ${person?.balanceCents < 0 ? "owed" : ""}`}
                   >
@@ -125,43 +144,54 @@ export function GroupsHome() {
             );
           })
         )}
-        {groups?.length === 0 ? (
-          <Link href="/groups/new" className="new-group-card">
-            <span className="new-group-plus">+</span>
-            <h2>Split something together.</h2>
-            <p>A weekend away, your flatmates, or dinner with friends.</p>
-            <span className="secondary-button">Create a group</span>
-          </Link>
-        ) : null}
+        <Link href="/groups/new" className="new-group-card">
+          <span className="new-group-plus">+</span>
+          <h2>
+            {groups?.length
+              ? "Add your next shared adventure"
+              : "Your next shared adventure"}
+          </h2>
+          <p>A trip, a home, or whatever you’re splitting together.</p>
+          <span className="secondary-button">Create a group</span>
+        </Link>
       </section>
       <p className="device-note">
-        Saved on this device. Keep your group links to open them elsewhere.
+        Groups you open are remembered only in this browser. Keep your
+        invitation links to return on another device.
       </p>
-      <details className="join-group">
-        <summary>
-          Join with an invitation link <span>+</span>
-        </summary>
-        <form onSubmit={openInvitation}>
-          <label htmlFor="invitation">Paste your group link</label>
-          <div className="join-input">
-            <input
-              className="input"
-              id="invitation"
-              type="text"
-              value={invitation}
-              onChange={(event) => setInvitation(event.target.value)}
-              placeholder="https://…/groups/…"
-              required
-            />
-            <button className="secondary-button" type="submit">
-              Open →
-            </button>
-          </div>
-        </form>
-        <p className="feedback error" role="status">
-          {error}
-        </p>
-      </details>
+      <div className="home-secondary">
+        <section className="sample-invite">
+          <span className="tag">New here?</span>
+          <h2>Take a look around.</h2>
+          <p>Explore a sample weekend trip, from expenses to who owes what.</p>
+          <Link href="/groups/demo" className="text-link">
+            Try a sample group →
+          </Link>
+        </section>
+        <section className="join-group">
+          <h2>Have an invitation?</h2>
+          <form onSubmit={openInvitation}>
+            <label htmlFor="invitation">Paste your group link</label>
+            <div className="join-input">
+              <input
+                className="input"
+                id="invitation"
+                type="text"
+                value={invitation}
+                onChange={(event) => setInvitation(event.target.value)}
+                placeholder="https://…/groups/…"
+                required
+              />
+              <button className="secondary-button" type="submit">
+                Open →
+              </button>
+            </div>
+          </form>
+          <p className="feedback error" role="status">
+            {error}
+          </p>
+        </section>
+      </div>
     </>
   );
 }
