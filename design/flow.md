@@ -10,6 +10,13 @@ Direction: a calm, friendly shared-expense product with plum, lilac, warm ivory 
 
 Private links grant shared access, including payment recording. Local bookmarks are conveniences, not a cloud account. No payment is transferred by TabShare. The prototype intentionally omits misleading navigation or unsupported account capabilities seen in the image concept.
 
-## Simplification pass
+## Approved four-page flow
 
-Replace the desktop sidebar with a restrained top navigation. Show saved groups as rows with their balances aligned for scanning. Use white space and thin dividers instead of nested colored panels. Keep group creation as the primary home action; reveal invitation entry on demand. Reduce repeated copy, duplicate buttons, decorative avatars, and empty filters. Keep the plum accent for actions and green for positive balances.
+The annotated concept is the visual reference: plum sidebar and actions, ivory canvas, lilac expense summaries, sage settlement cards, member avatars, and spacious group cards.
+
+1. Your groups: choose a saved group or create one.
+2. Group expenses: review the ledger, invite people, and add an expense.
+3. Add an expense: enter details, preview exact shares, and save. Saving advances to settlement.
+4. Settle up: focus on one suggested payment, confirm payment made elsewhere, then show confirmation and updated balances. Other suggestions remain selectable.
+
+Each is a separate full-page route. Desktop forms and settlements use two columns with group context; mobile stacks the same content and turns the sidebar into a compact header.

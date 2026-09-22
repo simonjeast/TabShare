@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getGroupSnapshot } from "@/lib/data";
-import { GroupWorkspace } from "@/components/GroupWorkspace";
 import { PaymentForm } from "@/components/PaymentForm";
+import { FlowSteps } from "@/components/FlowSteps";
 import { formatCurrencyFromCents as money, formatDate } from "@/lib/formatting";
 export const dynamic = "force-dynamic";
 export default async function SettlementsPage({ params, searchParams }) {
@@ -9,95 +10,149 @@ export default async function SettlementsPage({ params, searchParams }) {
   const query = await searchParams;
   const snapshot = await getGroupSnapshot(slug);
   if (!snapshot) notFound();
+  const index = Math.max(
+    0,
+    Math.min(
+      snapshot.settlements.length - 1,
+      Number.parseInt(query.payment, 10) || 0,
+    ),
+  );
+  const payment = snapshot.settlements[index];
   return (
-    <GroupWorkspace snapshot={snapshot} mode="balances" created={query.created}>
-      <div className="balance-columns">
-        <section>
-          <h2>Settle up</h2>
+    <>
+      <FlowSteps step={4} slug={slug} />
+      <Link href={`/groups/${slug}`} className="back-link">
+        ← {snapshot.group.name}
+      </Link>
+      <header className="workspace-heading">
+        <div>
+          <p className="eyebrow">Close the loop, together</p>
+          <h1>Settle up</h1>
           <p className="muted">
-            Pay each other your usual way, then record it here.
+            A little less keeping score. A little more being together.
           </p>
-          {!snapshot.settlements.length ? (
-            <div className="settled-state">
-              <span>✓</span>
-              <h3>
-                {snapshot.expenses.length
-                  ? "Everyone’s square."
-                  : "No payments needed."}
-              </h3>
+        </div>
+        <Link
+          href={`/groups/${slug}/expenses/new`}
+          className="secondary-button"
+        >
+          + Add another expense
+        </Link>
+      </header>
+      {query.created ? (
+        <div className="payment-success" role="status">
+          <span aria-hidden="true">✓</span>
+          <div>
+            <strong>
+              {query.created === "payment"
+                ? "Payment recorded"
+                : "Expense saved"}
+            </strong>
+            <p>
+              {query.created === "payment"
+                ? "One step closer to being even."
+                : "Here’s how to settle the balance."}
+            </p>
+          </div>
+        </div>
+      ) : null}
+      <div className="full-flow-grid settlement-grid">
+        <div>
+          {!payment ? (
+            <section className="settlement-focus all-settled">
+              <div className="payment-symbol">✓</div>
+              <h2>Everyone’s square.</h2>
               <p>
                 {snapshot.expenses.length
                   ? "All shared expenses are settled."
-                  : "Add an expense to see who owes what."}
+                  : "No payments needed. Add an expense to get started."}
               </p>
-            </div>
+              <Link href={`/groups/${slug}`} className="primary-button">
+                Back to your group →
+              </Link>
+            </section>
+          ) : slug === "demo" ? (
+            <section className="settlement-focus">
+              <div className="payment-symbol">↔</div>
+              <p className="payment-direction">
+                {payment.fromName} pays {payment.toName}
+              </p>
+              <h2 className="payment-amount">{money(payment.amountCents)}</h2>
+              <p>This is a sample settlement. No payment will be recorded.</p>
+              <Link className="primary-button" href="/groups/new">
+                Create your own group →
+              </Link>
+            </section>
           ) : (
-            snapshot.settlements.map((payment) =>
-              slug === "demo" ? (
-                <div
-                  className="payment-card sample-payment"
-                  key={payment.fromId + payment.toId}
-                >
-                  <span>
-                    {payment.fromName} pays {payment.toName}
-                  </span>
-                  <strong>{money(payment.amountCents)}</strong>
-                </div>
-              ) : (
-                <PaymentForm
-                  key={payment.fromId + payment.toId + payment.amountCents}
-                  slug={slug}
-                  payment={payment}
-                />
-              ),
-            )
+            <PaymentForm
+              key={payment.fromId + payment.toId + payment.amountCents}
+              slug={slug}
+              payment={payment}
+            />
           )}
-          {(snapshot.payments || []).length ? (
-            <div className="payment-history">
-              <h3>Recorded payments</h3>
-              {snapshot.payments.map((payment) => (
-                <div key={payment.id} className="balance-card">
+          {snapshot.payments?.length ? (
+            <section className="payment-history">
+              <h2>Recorded payments</h2>
+              {snapshot.payments.map((p) => (
+                <div className="balance-card" key={p.id}>
                   <div>
                     <strong>
-                      {payment.fromName} paid {payment.toName}
+                      {p.fromName} paid {p.toName}
                     </strong>
-                    <p className="helper-text">
-                      {formatDate(payment.createdAt)}
-                    </p>
+                    <p className="helper-text">{formatDate(p.createdAt)}</p>
                   </div>
-                  <strong>{money(payment.amountCents)}</strong>
+                  <strong className="positive">{money(p.amountCents)}</strong>
                 </div>
               ))}
-            </div>
+            </section>
           ) : null}
-        </section>
-        <aside className="member-balances">
-          <h2>Everyone’s balance</h2>
-          {snapshot.balances.map((member) => (
-            <div className="balance-card" key={member.id}>
-              <div>
-                <strong>{member.name}</strong>
-                <p className="helper-text">
-                  Paid {money(member.paidCents)} · Share{" "}
-                  {money(member.owedCents)}
-                </p>
+        </div>
+        <aside className="flow-context">
+          {snapshot.settlements.length > 1 ? (
+            <section className="context-card next-payments">
+              <h2>Who pays whom</h2>
+              {snapshot.settlements.map((p, i) => (
+                <Link
+                  key={p.fromId + p.toId}
+                  href={`/groups/${slug}/settlements?payment=${i}`}
+                  className={`payment-choice ${i === index ? "selected" : ""}`}
+                >
+                  <span>
+                    {p.fromName} → {p.toName}
+                  </span>
+                  <strong>{money(p.amountCents)}</strong>
+                </Link>
+              ))}
+            </section>
+          ) : null}
+          <section className="context-card">
+            <h2>Everyone’s balance</h2>
+            {snapshot.balances.map((member) => (
+              <div className="balance-card" key={member.id}>
+                <div className="balance-person">
+                  <span className="avatar">{member.name.slice(0, 1)}</span>
+                  <strong>{member.name}</strong>
+                </div>
+                <div
+                  className={member.balanceCents < 0 ? "negative" : "positive"}
+                >
+                  <strong>{money(Math.abs(member.balanceCents))}</strong>
+                  <small>
+                    {member.balanceCents < 0
+                      ? "owes"
+                      : member.balanceCents > 0
+                        ? "gets back"
+                        : "settled"}
+                  </small>
+                </div>
               </div>
-              <div
-                className={member.balanceCents < 0 ? "negative" : "positive"}
-              >
-                <strong>{money(Math.abs(member.balanceCents))}</strong>
-                <small>
-                  {member.balanceCents < 0
-                    ? "owes"
-                    : member.balanceCents > 0
-                      ? "gets back"
-                      : "settled"}
-                </small>
-              </div>
-            </div>
-          ))}
+            ))}
+          </section>
+          <p className="device-note">
+            Payments happen your usual way. TabShare keeps the record.
+          </p>
         </aside>
       </div>
-    </GroupWorkspace>
+    </>
   );
 }
