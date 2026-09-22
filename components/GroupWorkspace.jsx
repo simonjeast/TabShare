@@ -76,11 +76,7 @@ export function GroupWorkspace({
             </label>
           </div>
         </div>
-        {!demo ? (
-          <ShareGroup slug={group.slug} />
-        ) : (
-          <span className="tag">Sample group</span>
-        )}
+        {!demo ? <ShareGroup slug={group.slug} /> : null}
       </header>
       {created ? (
         <div className="banner success" role="status">
@@ -145,12 +141,14 @@ export function GroupWorkspace({
             Balances & settle up
           </Link>
         </nav>
-        <Link
-          className="primary-button"
-          href={demo ? "/groups/new" : `/groups/${group.slug}/expenses/new`}
-        >
-          {demo ? "Create your own group" : "+ Add expense"}
-        </Link>
+        {!demo ? (
+          <Link
+            className="primary-button"
+            href={`/groups/${group.slug}/expenses/new`}
+          >
+            + Add expense
+          </Link>
+        ) : null}
       </div>
       {mode === "expenses" ? (
         <section className="expense-workspace">

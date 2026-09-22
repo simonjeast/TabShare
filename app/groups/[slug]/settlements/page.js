@@ -32,12 +32,14 @@ export default async function SettlementsPage({ params, searchParams }) {
             A little less keeping score. A little more being together.
           </p>
         </div>
-        <Link
-          href={`/groups/${slug}/expenses/new`}
-          className="secondary-button"
-        >
-          + Add another expense
-        </Link>
+        {slug !== "demo" ? (
+          <Link
+            href={`/groups/${slug}/expenses/new`}
+            className="secondary-button"
+          >
+            + Add another expense
+          </Link>
+        ) : null}
       </header>
       {query.created ? (
         <div className="payment-success" role="status">
@@ -79,9 +81,6 @@ export default async function SettlementsPage({ params, searchParams }) {
               </p>
               <h2 className="payment-amount">{money(payment.amountCents)}</h2>
               <p>This is a sample settlement. No payment will be recorded.</p>
-              <Link className="primary-button" href="/groups/new">
-                Create your own group →
-              </Link>
             </section>
           ) : (
             <PaymentForm

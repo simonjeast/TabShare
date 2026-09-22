@@ -48,9 +48,11 @@ export function GroupsHome() {
           <h1>Your groups</h1>
           <p className="muted">Keep the good times. Split the rest.</p>
         </div>
-        <Link className="primary-button" href="/groups/new">
-          + New group
-        </Link>
+        {groups?.length ? (
+          <Link className="primary-button" href="/groups/new">
+            + New group
+          </Link>
+        ) : null}
       </header>
       <section className="groups-grid" aria-label="Your saved groups">
         {groups === null ? (
@@ -154,20 +156,38 @@ export function GroupsHome() {
           <p>A trip, a home, or whatever you’re splitting together.</p>
           <span className="secondary-button">Create a group</span>
         </Link>
+        {groups?.length === 0 ? (
+          <Link href="/groups/demo" className="sample-preview-card">
+            <span className="sample-preview-top">EXPLORE THE SAMPLE GROUP <span aria-hidden="true">↗</span></span>
+            <span className="sample-preview-art" aria-hidden="true">
+              <span className="sample-preview-disc disc-one" />
+              <span className="sample-preview-disc disc-two" />
+              <span className="sample-preview-disc disc-three" />
+            </span>
+            <span className="sample-preview-content">
+              <span className="sample-preview-kicker">See how it works</span>
+              <strong>Coastal weekend</strong>
+              <span>Three friends. A shared trip. Everything in its place.</span>
+              <span className="sample-preview-link">Explore the group <span aria-hidden="true">→</span></span>
+            </span>
+          </Link>
+        ) : null}
       </section>
       <p className="device-note">
         Groups you open are remembered only in this browser. Keep your
         invitation links to return on another device.
       </p>
       <div className="home-secondary">
-        <section className="sample-invite">
-          <span className="tag">New here?</span>
-          <h2>Take a look around.</h2>
-          <p>Explore a sample weekend trip, from expenses to who owes what.</p>
-          <Link href="/groups/demo" className="text-link">
-            Try a sample group →
-          </Link>
-        </section>
+        {groups?.length ? (
+          <section className="sample-invite">
+            <span className="tag">New here?</span>
+            <h2>Take a look around.</h2>
+            <p>Explore a sample weekend trip, from expenses to who owes what.</p>
+            <Link href="/groups/demo" className="text-link">
+              Try a sample group →
+            </Link>
+          </section>
+        ) : null}
         <section className="join-group">
           <h2>Have an invitation?</h2>
           <form onSubmit={openInvitation}>
